@@ -114,7 +114,7 @@ sensor $\rightarrow$ end-to-end AD model $\rightarrow$ control  $\rightarrow$ ex
 - 因果倒置？
 - 
 ## II. Perception
-- 四个核心任务：Dectection检测，Classification分类，Tracking跟踪，Segmentation语义分割
+- 四个核心任务：Dectection检测，Classification分类，Tracking跟踪，Segmentation分割(普通分割，语义分割semantic segmentation，实例分割instance segmentation)
 -     - Detection&Classification: R-CNN, Fast(er) R-CNN, YOLO, SSD
 -     - Tracking: 优势：1.可以解决Detection中的遮挡问题 2.保留身份preserver identity 流程：1.matching匹配 2.prediction预测
 -     - Segmentation：确定车辆可驾驶区域，依赖于特殊的CNN:FCN, 网络中的所有层均为卷积层
@@ -173,7 +173,66 @@ longitudinal-lateral decomposition
 分别生成ST和SL轨迹，然后进行合并
 
 ## Control
+1. PID(Proportional-Integral-Derivative)
+比例控制（P）：根据当前误差的大小成比例地调整控制输出。误差越大，控制输出的调整幅度就越大。比例控制的作用是快速响应系统的偏差，但不能消除静态误差。
+积分控制（I）：对误差进行积分，随着时间的积累，积分项会增大，从而消除静态误差。但是积分控制可能会导致系统响应变慢，甚至出现超调。
+微分控制（D）：根据误差的变化率来调整控制输出。微分控制可以预测系统的变化趋势，提前进行调整，从而提高系统的稳定性和响应速度。但微分控制对噪声比较敏感
+优点：简单，且大部分情况很有效
+缺点：(a)线性; (b)需要不同的PID控制器来控制转向和加速，难以将横向和纵向控制结合起来; (c)依赖于实时的误差测量
+2. LQR(Linear-Quadratic Regulator)线性二次调节器
+基于模型的控制器，使用车辆的状态来使误差最小化
+e.g., Apollo使用LQR进行横向控制，横向控制包括四个组件(a)横向误差(b)横向误差的变化率(c)朝向误差(d)朝向误差的变化率，同时具有三个控制输入：(a)转向(b)加速(c)制动
+L(linear) part: 适用于线性系统
+$\begin{equation}
+\cdot{x} = Ax+Bu
+\end{equation}$
+Q(Quadratic) part:
+cost function:
+$\begin{equation}
+cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
+\end{equation}$
+通过最小化成本函数进行求解，控制方法被描述成$u=-Kx$, 即为求解K
+3. MPC(Model Predictive Control)
+分为三步：
+- 建立车辆模型
+- 利用优化引擎计算有限时间范围内的控制输入(计算未来的输入序列)
+对于规划路径，考虑更长时间范围的控制输入，输出的结果更准确，相比之下短时间内的输入预测会导致输出路径的振荡，缺点是响应更慢。
+- 执行第一组控制输入(只执行序列中的第一步)
+优势：建立了车辆模型，因此比PID更精确
+
+## ---
+
+## Perception
+### Segmentation
+- 传统
+- 基于深度学习
+     - reference
+         - A Survey on DNN based Semantic Segmentation
+         - https://blog.csdn.net/Julialove102123/article/details/80493066
+     - 通用框架
+           - 前端：使用FCN进行特征提取
+               - 下采样+上采样
+                - 多尺度特征融合
+                - 获得像素级别的segmentation map
+           - 后端：使用CRF(条件随机场)/MRF(马尔可夫随机场)优化前端的输出得到优化后的分割图
+    - 经典论文/模型
+    -     - Fully Convolutional Networks(FCN)
+    -     神经网络用作语义分割的开山之作。（a）提出了全卷积网络（全连接层替换为卷积层）（b）使用了反卷积层（从特征图映射为原图大小，上采样的功能）
+    -     - DeepLab
+    -     引入了空洞卷积
+    -     - Pyramid Scene Parsing Network(PSPNet: CVPR 2017)
+    -     核心贡献为Global Pyramid Pooling，将特征图缩放到几个不同的尺寸，使得特征具有更好的全局和多尺度信息
+    -     - Mask R-CNN(BY Kaiming He: ICCV 2017)
+    -     - U-Net(2015)
+    - 
+#### 1. 车道线检测
+1. 基于传统方法的车道线检测
+- cv2.Canny
+- cv.HoughLinesP(Hough Transform)
+
 
 ## 一些资料
 https://github.com/ProgramTraveler/Road-To-Autonomous-Driving?tab=readme-ov-file
+
+https://www.bilibili.com/video/BV1b94y1F7KU?spm_id_from=333.788.videopod.episodes&vd_source=d7339479a3c0de1eb46f840baa9a3510&p=6
   
