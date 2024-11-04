@@ -226,9 +226,14 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
     -     - U-Net(2015)
     - 
 #### 1. 车道线检测
+👉 https://github.com/andylei77/
 1. 基于传统方法的车道线检测
 - cv2.Canny
 - cv.HoughLinesP(Hough Transform)
+2. 基于深度学习(lane-detection summary👉 https://github.com/amusi/awesome-lane-detection)
+- LaneNet: 一般将图像透视变换到鸟瞰图，可以进一步优化车道线
+
+  论文：Towards End-to-end Lane Detection: an Instance Segmentation Approach(2018)[https://ieeexplore.ieee.org/abstract/document/8500547?casa_token=8oi_2lJ_OIgAAAAA:i6iIWUnbsRFKrsev6V5HWTCzau090LEdr0AP52crOOtzvJPv12pqrf9fCgKF_h_VDRXdNa3vfLSV
 
 
 ## 一些资料
