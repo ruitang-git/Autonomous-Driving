@@ -225,6 +225,38 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
     -     - Mask R-CNN(BY Kaiming He: ICCV 2017)
     -     - U-Net(2015)
     - 
+### Object Detection(目标检测)
+- 算法流程
+-     - 位置：先找到所有的ROI(Region of Interest)
+-         - method1: Sliding Window(会产生很多无效的框，计算复杂)
+-         - method2: Region Proposal
+-             - 使用分割segmentation去做
+-             - 减小了无效的框
+-             - selective search：over segmentation, merge adjacent boxes according to similarity[https://www.learnopencv.com/selective-search-for-object-detection-cpp-python]
+-         - method3: CNN
+-             - anchor box
+-             - RPN(from Faster-CNN)
+-     - 类别：对每一个ROI做分裂获取类别信息
+-     - 位置修正
+- 算法分类
+    - 基于图片的检测
+         - RCNN(首次将CNN引入目标识别, Selective Search+CNN+SVM+linear regression)
+         - SPPNet(在RCNN基础上实现CNN共享降低计算量，同时引入SPP层将不同尺寸的特征转换为固定尺寸的特征后接入全连接层)
+         - Fast-RCNN(在SPPNet基础上分类和回归都用CNN实现，同时SPP层替换为ROI Pooling加速计算。但候选框还是基于Selective Search，未实现完全端到端)
+         - Faster-RCNN(使用CNN提取候选框，即RPN(Region Proposal Net), 实现端到端训练)
+    **以上算法都是基于预选框加分类回归的，称之为two-step；以下介绍one-step的算法；一般来说one-step精度会稍低，但实时性更好**
+         - YOLO(全图划分成7x7网格，每个网格对应有2个default box)  DarkNet
+         - SSD
+         - YOLO-v2
+         -     - 更丰富的default box
+         -     - 更灵活的类别预测（把预测类别的机制从空间位置（cell）中解耦，由default box同时预测类别和坐标，有效解决物体重合？？？）
+         - YOLO-v3
+         -     - 更好的基础网络
+         -     - 考虑多尺度
+    - 基于点云的检测
+
+
+
 #### 1. 车道线检测
 👉 https://github.com/andylei77/
 1. 基于传统方法的车道线检测
