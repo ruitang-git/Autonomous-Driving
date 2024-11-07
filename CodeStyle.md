@@ -9,6 +9,7 @@
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 ```
 2. 数据预处理
+   
    a. 数据变换，数据增强
    ```python
     import torchvision.transforms as transforms
@@ -30,7 +31,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     transformed_image = transform(image)
 
    ```
+   
    b. 创建DataSet数据类型
+   
    c. 创建DataLoader类型
    ```python
     # 下述给出代码同时完成以上三步的操作（流程化操作，一定要背下来！！！）
@@ -79,13 +82,14 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print(f"Batch of images shape: {images.shape}")
         print(f"Batch of labels: {labels}")
    ```
-3. 搭建模型
+4. 搭建模型
 建议新建一个文件夹名为”network“，在其中新建.py文件书写关于模型的代码
 ```python
 model = create_model(...)
 model.to(device)
 ```
 4. 训练，测试（含损失函数定义）
+   
      - a. 决定是否要加载存储系数
         ```python
         ## 一般只加载model参数
@@ -101,19 +105,23 @@ model.to(device)
        for param in model.backbone.parameters():
          param.requires_grad = False
        ```
+       
      - c. 选择损失函数
        ```python
        loss_fn = torch.nn.CrossEntropyLoss()
        ```
+       
      - d. 选择优化器
        ```python
        params = [p for p in model.parameters() if p.requires_grad]
        optimizer = torch.optim.SGD(params, lr = 0.0001)
        ```
+       
      - e. 选择学习率控制器(optional)
        ```python
        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.33)
        ```
+       
      - f. 训练
       建议新建一个utils文件夹，将训练脚本放在该文件夹下
       ```python
@@ -131,6 +139,7 @@ model.to(device)
             optimizer.step()
       
       ```
+      
       - g. 测试
         同样建议将测试脚本放在utils文件夹下
         ```python
@@ -147,6 +156,7 @@ model.to(device)
                  loss_all += loss
         loss_mean = loss_all/(i+1)
         ```
+        
       - h. 保存模型
         以下按每间隔指定数量的epoch存储进行演示
         ```python
