@@ -224,8 +224,9 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
     -     核心贡献为Global Pyramid Pooling，将特征图缩放到几个不同的尺寸，使得特征具有更好的全局和多尺度信息
     -     - Mask R-CNN(BY Kaiming He: ICCV 2017)
     -     - U-Net(2015)
-    - 
+      
 ### Object Detection(目标检测)
+👉[code](https://github.com/WZMIAOMIAO/deep-learning-for-image-processing)
 - 算法流程
 -     - 位置：先找到所有的ROI(Region of Interest)
 -         - method1: Sliding Window(会产生很多无效的框，计算复杂)
