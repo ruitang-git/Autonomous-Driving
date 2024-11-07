@@ -3,7 +3,7 @@
 - model
 - loss function
 
-## Coding Step
+## Coding Step 👉[pytorch official reference](https://pytorch.org/tutorials/beginner/introyt/trainingyt.html)
 1. 指定训练设备
 ```python
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -86,17 +86,82 @@ model = create_model(...)
 model.to(device)
 ```
 4. 训练，测试（含损失函数定义）
-     - a. 决定模型训练方式（部分or全部）
+     - a. 决定是否要加载存储系数
+        ```python
+        ## 一般只加载model参数
+        
+        checkpoint = torch.load(path, map_location='cpu')
+        model.load_state_dict(checkpoint['model'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
+        ```
+        
+     - b. 决定模型训练方式（部分or全部）
        ```python
        for param in model.backbone.parameters():
          param.requires_grad = False
        ```
-     - b. 选择优化器
+     - c. 选择损失函数
+       ```python
+       loss_fn = torch.nn.CrossEntropyLoss()
+       ```
+     - d. 选择优化器
        ```python
        params = [p for p in model.parameters() if p.requires_grad]
        optimizer = torch.optim.SGD(params, lr = 0.0001)
        ```
+     - e. 选择学习率控制器(optional)
+       ```python
+       lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.33)
+       ```
+     - f. 训练
+      建议新建一个utils文件夹，将训练脚本放在该文件夹下
+      ```python
+      mse = utils.train_one_epoch(model, optimizer, train_data_loader, device)
+      lr_scheduler.step()  ## 在训练脚本和测试脚本之间插入lr控制器
+      
+      def train_one_epoch(...):
+         model.train()
+         for i, data in enumerate(training_loader):
+            inputs, label = data
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = loss_fn(outputs, labels)
+            loss.backward()
+            optimizer.step()
+      
+      ```
+      - g. 测试
+        同样建议将测试脚本放在utils文件夹下
+        ```python
+        mse = utils.evaluate(model, val_data_loader, device)
 
+        loss_all = 0
+        def evaluate(...):
+           model.eval()
+           with torh.no_grad():
+              for i, data in enumerate(val_data_loader):
+                 inputs, label = data
+                 outputs = model(inputs)
+                 loss = loss_fn(outputs, label)
+                 loss_all += loss
+        loss_mean = loss_all/(i+1)
+        ```
+      - h. 保存模型
+        以下按每间隔指定数量的epoch存储进行演示
+        ```python
+
+        save_files = {
+            'model': model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'lr_scheduler': lr_scheduler.state_dict(),
+            'epoch': epoch}
+
+        torch.save(save_files, "./save_weights/model-{}.pth".format(epoch))
+        ```
+
+      - overall procedure
+       👉[pytorch official reference](https://pytorch.org/tutorials/beginner/introyt/trainingyt.html)
 
 
 * Others:
