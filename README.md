@@ -226,6 +226,7 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
     -     - U-Net(2015)
       
 ### Object Detection(目标检测)
+#### PART I: 2D(i.e., 基于图片)
 👉[code](https://github.com/WZMIAOMIAO/deep-learning-for-image-processing)
 - 算法流程
 -     - 位置：先找到所有的ROI(Region of Interest)
@@ -255,6 +256,54 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
          -     - 更好的基础网络
          -     - 考虑多尺度
     - 基于点云的检测
+#### PART II: 3D(i.e., 基于激光雷达点云)
+- 传统vs深度学习
+    - 传统：
+          - 基于点云的目标检测： 分割地面$\rightarrow$点云聚类$\rightarrow$特征提取$\rightarrow$分类
+          - 地面分割依赖于认为设计的特征和规则，如设置一些阈值，表面法线等
+    - 深度学习：
+          - 非结构化数据
+          - 无序性
+          - 数据稀疏
+      
+- Pixel-based
+      - 基本思想：
+          - 3D$\rightarrow$2D, 三维点云在不同角度的相机投影
+          - 再借助2D图像领域的深度学习进行分析
+      - 典型算法：
+          - MVCNN(Multi-View CNN)
+          - MV3D: 输入为BV+FV+RGB
+          - AVOD: 输入为BEV+RGB
+          - SqueezeSeg: 投影到球面
+- Voxel-based
+      - 基本思想
+          - 将点云划分为均匀的空间三维体素
+          - 优点：可以将卷积池化迁移到3D直接应用
+          - 缺点：表达的数据量大，为三次方
+      - 典型算法：
+          - VoxNet
+          - VoxelNet
+- Tree-based
+      - 基本思想：
+          - 使用tree来结构化点云
+          - 优点：与体素相比是更高效的点云结构化方法（该粗的粗，细的细）
+          - 缺点：让然需要额外的体素化处理
+      - 典型算法：
+          - OctNet
+          - O-CNN
+- Point-based
+      - 基本思想😕：
+          - 直接对点云进行处理，使用对称函数解决点的无序性(e.g., maxpooling)，使用空间变换解决旋转/平移性
+      - 典型算法：
+          - PointNet(CVPR2017)
+              - maxpooling解决无序性
+              - 空间变换解决旋转问题：三维的STN(Spatial Tranformation Network)可以通过点云本身的位姿信息学习到一个最有利于网络进行分类或分割的变换矩阵，将点云变换到合适的视角（例如俯视图看车，正视图看人）
+          - PointCNN 
+
+
+
+
+### target tracking(目标跟踪)
 
 
 
