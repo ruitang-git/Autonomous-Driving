@@ -159,7 +159,7 @@ Cartesian Coordinates $\rightarrow$ Frenet Coordinates(描述了汽车相对于�
 Frenet Coordinates: s:代表沿道路的距离Longitudinal Axis; d:表示与纵向线的距离Lateral Axis
 
 两种解耦的规划方案：
-path-speed decompostion路径速度解耦规划
+path-speed decompostion路径速度解耦规划（较主流）
 1. 路径规划：使用成本函数对候选路径进行筛选评估, 成本函数可包括与车道中心的距离，与障碍物的距离，曲率等；
 通过将道路划分为多个单元格，并且在单个单元格内生成多个点，这些点的组合便可构建成多个候选路径；
 2. 速度规划：与路径点相关的一系列速度（速度曲线speed profile)
@@ -167,10 +167,14 @@ ST图（用于构建速度曲线）： S：车辆的纵向位移 t:时间； 速
 
 Quadratic Programming: 将离散的路径平滑化
 
-longitudinal-lateral decomposition
+longitudinal-lateral decomposition就（采样空间过大，一般自动驾驶不用。但适合物流小车等有限场景）
 1. ST: 具有时间戳的纵向轨迹（S为Frenet Coordinates中的s量）
 2. SL：相对于纵向轨迹的横向偏移
-分别生成ST和SL轨迹，然后进行合并
+分别生成ST和SL轨迹，然后进行合并。
+为降低采用空间，分为三个场景进行采样：
+    - cruise
+    - following  
+    - stop
 
 ## Control
 1. PID(Proportional-Integral-Derivative)
@@ -301,12 +305,6 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
           - PointCNN 
 
 
-
-
-### target tracking(目标跟踪)
-
-
-
 #### 1. 车道线检测
 👉 https://github.com/andylei77/
 1. 基于传统方法的车道线检测
@@ -318,6 +316,184 @@ cost = \int_{0}^{\infty}(x^TQx+u^TRu)dt
   论文：Towards End-to-end Lane Detection: an Instance Segmentation Approach(2018)[https://ieeexplore.ieee.org/abstract/document/8500547?casa_token=8oi_2lJ_OIgAAAAA:i6iIWUnbsRFKrsev6V5HWTCzau090LEdr0AP52crOOtzvJPv12pqrf9fCgKF_h_VDRXdNa3vfLSV
 
 
+### target tracking(目标跟踪)
+
+## Prediction(sequence data network, behavior modeling)
+学术团队：李飞飞(行人), Apollo（车辆）
+
+
+PNC的重要性逐渐凸显，当前自动驾驶出错50%是PNC模块导致。
+
+要求：
+    - Real time 实时
+    - Accuracy 准确性
+
+methods:
+    - model-based
+    - data-driven
+    
+### Vehicle Predict
+
+Lane Model
+    - lane sequence
+        - HD map
+        - junction
+        - off line
+    - classification
+        - e.g., lane0$\rightarrow$lane1$\rightarrow$lane2
+    - lane feature
+        - lane S/L
+        - lane curvature
+        - traffic law
+    - vehicle state
+        - velocity
+        - heading
+        - type
+        - size
+        - heading rate
+    - environment
+    - network
+
+Data pipeline
+- sampling engineering 样本工程
+- model optimization
+- feature engineering
+
+Trajectory Builder:
+拟合目标从A点到B点的运动轨迹
+- Kalman filter
+- polynomial
+- velocity
+
+### Pedestrain Predict
+- High randomness
+- Low traffic constriants
+- No kinematics model
+- Benchmark
+      - ETH
+      - UCY
+- SOTA
+  - Li Feifei: Social LSTM: Human Trajectory Prediction in Crowded Spaces
+ 
+
+## (Motion) Planning
+
+### Motion Planning的三个领域
+cited from motion planning by Steve Lavelle: http://planning.cs.uiuc.edu/par1.pdf
+
+#### 基础知识
+- Robotics Fields:
+      - 生成轨迹实现目标
+      - RRT, A*, D*, D* Lite
+- Control Theory
+      - 动态系统理论实现目标状态
+      - MPC, LQR
+- AI: 生成状态和Action的一个映射
+      - Reinforcement Learning, Imitation Learning
+
+Motion planning问题可以简化为一个路径选择问题(最短路径问题)，常见的算法有BFS, DFS, Dijkstra，缺点是均为Non-informative search，效率比较低。经典的A* search为基于Dijkstra的改进算法，知道了终点位置，启发式的。👉[https://www.redblobgames.com/pathfinding/a-star/introduction.html]
+
+自动驾驶的规划和A* search的gap：
+    - 部分感知
+        - 基于部分感知，自然的想到使用贪心算法：incremental search：目前状态求解到最优
+        - D*：部分环境的一个search
+            - Apollo登月小车
+        - D* Lite
+            
+    - 动态障碍物
+    - 复杂环境
+    - A* search本身是一个global algorithm，应用场景为global routing
+
+Autonomous Driving Motion Planning Overall Summary：
+    - Safely
+    - Smoothly
+    - 到达目标地
+    - 3D路径优化
+    - 硬件
+        - 定位感知设备
+    - 软件
+        - 动态信息
+        - 静态信息
+            - HD Map
+                - 实时性保证（导航信息）
+
+
+基本planning方法：
+- 经典基于环境建模的方法
+    - RRT
+    - Lattice
+- 现代无人车planning的方法
+    - Darpa
+    - Lattice in Frenet Frame
+    - Spiral Polynomial
+    👉 A Review of Motion Planning Techniques for Automated Vehicles
+- 质点模型
+      - 物体看成一个质点
+      - 目标为点之间不碰撞
+- 刚体问题
+      - 车无法简化为质点，为一个刚体
+      - BycicleModel
+      - XY Heading
+      - Collision
+- Planning限制条件
+      - 避免碰撞
+      - 边界阈值
+- 连续空间怎么解？
+      - 离散化
+      - 网格化
+
+
+传统机器人基础
+- PRM(Probabilistic Roadmap Planning)
+      - 连续空间离散化
+          - 随机撒点
+          - 删除障碍物上的点
+      - 连接可行点，形成可行空间
+      - A*
+      - 局限性：为全局算法，通常无法感知全局
+- RRT(Incremental version of PRM)
+      - 使用增量搜索的方式
+      - 找附近可行点的最优解（撒点搜索距离不能太远）
+      - 局限性：路径为折线，不平滑
+- Lattice
+      - 改进了RRT的折线问题，给出了path的平滑曲线
+      - 网格化：每个采样格均用曲线连接
+      - 局限性：指数级别的一个搜索算法（NP-Hard）
+- DP(动态规划)
+      - 减小了Lattice的搜索空间，通过复用已有结果
+      - 局限性：平滑度仍然不够，曲率连续但曲率导数不一定连续
+- QP(二次规划)
+      - 凸优化问题最优化求解
+      - 通过QP找到平滑曲线
+- 刚体模型（对车进行建模）
+      - bicycle model😕
+
+
+#### 自动驾驶Planning
+- 定义：A点到B点，构建一个车辆运动的轨迹，结合HDMap，Localization和Prediction
+- 两个层面：导航层面routing；运动轨迹层面planning
+
+- Routing
+      - 导航一条A到B的全局路径
+      - 输入：地图，当前位置，目的地
+      - 输出：路由
+      - 搜索：地图数据转化为图网络，其中节点表示道路，边表示道路连接
+
+    - A*
+          - 最经典的路径查找算法
+          - $F(n) = G(n)+H(n)$
+              - $F(n)$表示道路routing的总cost
+              - $G(n)$表示起始点到候选点的cost
+              - $H(n)$表示候选点通过启发函数得到的目标点cost
+- Motion Planning
+      - planning理解为高精度，低级别的一个search， trajectory planning
+      - 轨迹点： XY, Time, Velocity
+      - 规划的约束条件
+          - collision
+          - comfortable
+          - 运动学约束
+          - 合法
+  
 ## 一些资料
 https://github.com/ProgramTraveler/Road-To-Autonomous-Driving?tab=readme-ov-file
 
