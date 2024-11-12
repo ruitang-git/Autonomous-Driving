@@ -419,6 +419,12 @@ Autonomous Driving Motion Planning Overall Summary：
 
 
 基本planning方法：
+- planning路径规划算法可分为四类
+  👉[Intro](https://blog.csdn.net/CV_Autobot/article/details/139016301?ops_request_misc=&request_id=&biz_id=102&utm_term=%E5%9F%BA%E4%BA%8E%E9%87%87%E6%A0%B7%E5%92%8C%E6%8F%92%E5%80%BC%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-139016301.142^v100^pc_search_result_base9&spm=1018.2226.3001.4187)
+    - 基于采样: RRT
+    - 基于搜索: A*
+    - 基于插值拟合: beta spline
+    - 基于最优化Numerical Optimization: MPC
 - 经典基于环境建模的方法
     - RRT
     - Lattice
@@ -468,7 +474,7 @@ Autonomous Driving Motion Planning Overall Summary：
 - 刚体模型（对车进行建模）
       - bicycle model😕
 
-
+👉 [Algorithm tutorial with code](https://github.com/AtsushiSakai/PythonRobotics)
 #### 自动驾驶Planning
 - 定义：A点到B点，构建一个车辆运动的轨迹，结合HDMap，Localization和Prediction
 - 两个层面：导航层面routing；运动轨迹层面planning
@@ -480,7 +486,7 @@ Autonomous Driving Motion Planning Overall Summary：
       - 搜索：地图数据转化为图网络，其中节点表示道路，边表示道路连接
 
     - A*
-          - 最经典的路径查找算法
+          - 最经典的路径查找算法 [tutorial](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
           - $F(n) = G(n)+H(n)$
               - $F(n)$表示道路routing的总cost
               - $G(n)$表示起始点到候选点的cost
@@ -493,6 +499,9 @@ Autonomous Driving Motion Planning Overall Summary：
           - comfortable
           - 运动学约束
           - 合法
+
+  #### APOLLO如何求解规划问题
+  基于path-speed decompostion路径速度解耦规划，并采用EM迭代优化。选取最优的路径曲线，并求解当下的最优的ST，再返回优化路径曲线...
   
 ## 一些资料
 https://github.com/ProgramTraveler/Road-To-Autonomous-Driving?tab=readme-ov-file
