@@ -513,8 +513,12 @@ Autonomous Driving Motion Planning Overall Summary：
         智能体学习一个价值函数（value function），用于估计在每个状态下采取各种行动所能获得的长期奖励。例如，Q - 学习（Q - Learning）是一种典型的基于价值的算法。智能体通过不断更新 Q - 值（Q - value）来学习最优策略，Q - 值表示在某个状态下采取某个行动后的预期累积奖励
             - Q-Learning
                 👉[csdn tutorial](https://blog.csdn.net/qq_39429669/article/details/117948150?ops_request_misc=%257B%2522request%255Fid%2522%253A%252262DAD342-F246-4D1D-9AFC-68EF6AD2DDAC%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=62DAD342-F246-4D1D-9AFC-68EF6AD2DDAC&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-117948150-null-null.142^v100^pc_search_result_base9&utm_term=q%20learning&spm=1018.2226.3001.4187)
-                - bellman equation
+
+                👉[flappy_bird using Q-learning implementation](https://github.com/vietnh1009/Flappy-bird-deep-Q-learning-pytorch?tab=readme-ov-file)
+    
+            - bellman equation
                 $Q(s, a)\leftarrow Q(s, a)+\alpha[r+\gamma max_{a'}Q(s', a')-Q(s, a)]$
+                where $s$ is state, $a$ is the action, and $r$ is the instant reward. $\alpha$ is the lr between [0, 1], 较小意味着更新越慢，智能体越依赖过去的经验，较大则会更快适应新的信息但可能会导致学习过程不稳定。$\gamma$ is the discount factor between [0, 1]折扣因子，用于权衡近期奖励和远期奖励的重要性，当为1时，更看重长期激励。$s'$为采取动作后的下一状态。其中右侧$[r+\gamma max_{a'}Q(s', a')-Q(s, a)]$为更新项，表示新的估计Q与当前Q的差异。
         - 基于策略的学习policy-based
         直接学习策略函数，通过优化策略来最大化累积奖励。例如，策略梯度（Policy Gradient）方法，它通过计算策略梯度来更新策略参数，使得策略朝着获得更多奖励的方向改进。
 - 模仿学习
