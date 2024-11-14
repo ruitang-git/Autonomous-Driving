@@ -500,9 +500,36 @@ Autonomous Driving Motion Planning Overall Summary：
           - 运动学约束
           - 合法
 
-  #### APOLLO如何求解规划问题
+#### APOLLO如何求解规划问题
   基于path-speed decompostion路径速度解耦规划，并采用EM迭代优化。选取最优的路径曲线，并求解当下的最优的ST，再返回优化路径曲线...
-  
+
+
+#### 机器学习 in PNC
+[tutorial video](https://www.youtube.com/watch?v=zR11FLZ-O9M)
+- 强化学习
+  强化学习是一种机器学习方法，智能体（agent）在环境（environment）中采取一系列行动（action），环境会根据智能体的行动给予奖励（reward）或惩罚。智能体的目标是通过不断学习，找到一种最优策略（policy），使得在长期的交互过程中获得的累积奖励最大化
+  - 学习方式
+        - 基于价值的学习value-based
+        智能体学习一个价值函数（value function），用于估计在每个状态下采取各种行动所能获得的长期奖励。例如，Q - 学习（Q - Learning）是一种典型的基于价值的算法。智能体通过不断更新 Q - 值（Q - value）来学习最优策略，Q - 值表示在某个状态下采取某个行动后的预期累积奖励
+            - Q-Learning
+                👉[csdn tutorial](https://blog.csdn.net/qq_39429669/article/details/117948150?ops_request_misc=%257B%2522request%255Fid%2522%253A%252262DAD342-F246-4D1D-9AFC-68EF6AD2DDAC%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=62DAD342-F246-4D1D-9AFC-68EF6AD2DDAC&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-117948150-null-null.142^v100^pc_search_result_base9&utm_term=q%20learning&spm=1018.2226.3001.4187)
+                - bellman equation
+                $Q(s, a)\leftarrow Q(s, a)+\alpha[r+\gamma max_{a'}Q(s', a')-Q(s, a)]$
+        - 基于策略的学习policy-based
+        直接学习策略函数，通过优化策略来最大化累积奖励。例如，策略梯度（Policy Gradient）方法，它通过计算策略梯度来更新策略参数，使得策略朝着获得更多奖励的方向改进。
+- 模仿学习
+  模仿学习也称为学徒学习（apprenticeship learning）或学习演示（learning from demonstration），它是一种通过观察专家（expert）的行为来学习策略的方法。智能体试图模仿专家在各种情况下的行为，从而学会执行任务。
+  - 学习方式
+  - 行为克隆（Behavior Cloning）：
+    这是最直接的模仿学习方法。智能体通过直接模仿专家的行动来学习策略。例如，收集专家在一系列状态下采取的行动数据，然后使用监督学习方法（如神经网络）来训练智能体，使得智能体在给定相同状态时能够输出与专家相似的行动。然而，行为克隆可能会受到分布偏移（distribution shift）问题的影响，即智能体在训练过程中看到的状态 行动对和在实际应用中遇到的情况可能不同，导致性能下降。
+  - 逆强化学习（Inverse Reinforcement Learning）：
+    假设专家的行为是最优的，通过观察专家的行为来推断出专家所遵循的奖励函数，然后利用这个推断出的奖励函数进行强化学习。例如，观察一个熟练的杂技演员的表演，通过分析他的动作来推测出什么样的动作会得到高奖励（如动作的稳定性、美观性等），然后基于这个奖励函数来训练智能体表演杂技。
+  - 与强化学习的关系和区别
+    - **关系**：模仿学习可以看作是一种特殊的强化学习，它通过利用专家的示范来加速学习过程，或者在奖励信号难以定义的情况下提供一种学习策略的方法。
+    - **区别**：强化学习是通过环境给予的奖励信号来学习最优策略，而模仿学习主要依赖于专家的行为示范。强化学习需要在环境中进行大量的探索来发现好的策略，而模仿学习则试图直接复制专家的成功经验。此外，强化学习通常能够处理没有先验知识的情况，而模仿学习需要有专家行为数据作为学习的基础。
+  - Alexandre Attia. Global Overview of Imitation Learning
+
+
 ## 一些资料
 https://github.com/ProgramTraveler/Road-To-Autonomous-Driving?tab=readme-ov-file
 
