@@ -19,7 +19,7 @@ Large language Model $\rightarrow$ Multimodal Large language Model $\rightarrow$
 
 生成模型，通过历史数据生成未来数据？
 
-历史信息，生成条件$\rightarrow$ Encoder $\rightarrow$ World Model $\rightarrow$ Decoder $\rightarrow$ 未来信息
+历史信息，生成条件 $\rightarrow$ Encoder $\rightarrow$ World Model $\rightarrow$ Decoder $\rightarrow$ 未来信息
 
 ## Industry Field
 
