@@ -1,5 +1,6 @@
 ## End-to-end Autonomous Driving
 [1] End-to-end Autonomous Driving: Challenges and Frontiers[link](https://arxiv.org/pdf/2306.16927)
+[2] [paper list](https://github.com/OpenDriveLab/End-to-end-Autonomous-Driving/blob/main/papers.md#multi-sensor-fusion)
 
 ### Motivation
 - Pipline disadvantages:
