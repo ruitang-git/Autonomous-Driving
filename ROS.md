@@ -116,11 +116,13 @@ $ source ~/catkin_ws/devel/setup.bash
 
 #### 1. 发布者Publisher
 如何实现一个发布者？
+
 step1. 创建发布者代码（c++/python）
 - 初始化ROS节点
 - 向ROS Master注册节点信息，包括发布的话题名和消息类型
 - 创建消息数据
 - 按照一定频率循环发布消息
+
 step2. 配置发布者代码编译规则
 如何配置CMakeLists.txt中的编译规则
 - 设置需要编译的代码和生成的可执行文件
@@ -133,11 +135,11 @@ target_link_libraries(velocity_publisher ${catkin_LIBRARIES})
 ```
 step3. 编译并运行
 ```
-## 编译
+##编译
 $ cd ~/catkin_ws
 $ catkin_make   ## 编译
 $ source devel/setup.bash ## 编译结束后一定要记得配置环境变量！！！
-## 运行
+##运行
 $ roscore
 $ rosrun turtlesim turtlesim_node
 $ rosrun learning_topic velocity_publisher
