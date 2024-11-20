@@ -52,10 +52,10 @@
 ### 创建工作空间和功能包
 工作空间workspace是一个存放工程开发相关文件的文件夹
 
-    - src: 代码空间
-    - build：编译空间
-    - install：安装空间
-    - devel：开发空间（ROS1中有，ROS2中删去，因为与install空间有重复）
+- src: 代码空间
+- build：编译空间
+- install：安装空间
+- devel：开发空间（ROS1中有，ROS2中删去，因为与install空间有重复）
 
 +----------------------+
 + workspace_folder/    +
