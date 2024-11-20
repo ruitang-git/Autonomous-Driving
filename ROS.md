@@ -50,6 +50,8 @@
 
 
 ### 创建工作空间和功能包
+
+#### 1. 介绍
 工作空间workspace是一个存放工程开发相关文件的文件夹
 
 - src: 代码空间
@@ -71,4 +73,72 @@
 +----------------------+
 ```
 
-    
+#### 2. 创建
+- 创建工作空间(创建src目录)
+```
+$ mkdir ~/catkin_ws/src
+$ cd ~/catkin_ws/src
+$ catkin_init_wrokspace
+```
+- 编译工作空间(创建build, devel, install目录)
+```
+$ cd ~/catkin_ws
+$ catkin_make
+$ catkin_make install
+```
+- 设置环境变量
+```
+$ source ~/catkin_ws/devel/setup.bash
+```
+- 检查环境变量
+```
+$ echo $ROS_PACKAGE_PATH
+```
+
+#### 3. 创建功能包
+功能包为代码的最小单元，代码不能直接放在src目录下！
+**catkin_create_pkg <package_name> [depend1][depend2][depend3]**
+- 创建功能包
+```
+$ cd ~/catkin_ws/src
+$ catkin_create_pkg test_pkg rospy roscpp
+```
+- 编译功能包
+- ```
+$ cd ~/catkin_ws
+$ catkin_make
+$ source ~/catkin_ws/devel/setup.bash
+```
+
+同一个工作空间下，不允许存在同名功能包。不同空座空间下，允许存在同名功能包
+
+### 通信
+
+#### 1. 发布者Publisher
+如何实现一个发布者？
+step1. 创建发布者代码（c++/python）
+- 初始化ROS节点
+- 向ROS Master注册节点信息，包括发布的话题名和消息类型
+- 创建消息数据
+- 按照一定频率循环发布消息
+step2. 配置发布者代码编译规则
+如何配置CMakeLists.txt中的编译规则
+- 设置需要编译的代码和生成的可执行文件
+```
+add_executable(velocity_pyblisher src/velocity_publisher.cpp)
+```
+- 设置链接库
+```
+target_link_libraries(velocity_publisher ${catkin_LIBRARIES})
+```
+step3. 编译并运行
+```
+## 编译
+$ cd ~/catkin_ws
+$ catkin_make   ## 编译
+$ source devel/setup.bash ## 编译结束后一定要记得配置环境变量！！！
+## 运行
+$ roscore
+$ rosrun turtlesim turtlesim_node
+$ rosrun learning_topic velocity_publisher
+```
