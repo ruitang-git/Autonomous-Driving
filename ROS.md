@@ -104,7 +104,7 @@ $ cd ~/catkin_ws/src
 $ catkin_create_pkg test_pkg rospy roscpp
 ```
 - 编译功能包
-- ```
+```
 $ cd ~/catkin_ws
 $ catkin_make
 $ source ~/catkin_ws/devel/setup.bash
