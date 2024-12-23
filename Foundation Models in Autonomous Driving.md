@@ -1,6 +1,6 @@
 ## Academic Field
 
-### 1. Envolving pipelin
+### 1. Envolving pipeline
 
 Large language Model $\rightarrow$ Multimodal Large language Model $\rightarrow$ World Model
 
